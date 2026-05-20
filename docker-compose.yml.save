@@ -1,0 +1,67 @@
+
+
+
+
+
+# Masuk ke container database
+docker exec -it db_mahasiswa bash
+
+# Login ke MySQL CLI
+mysql -u root -p
+# (Masukkan password: Sayaganteng2_)
+
+# Tampilkan data tabel kotak
+use pertemuan11_db;
+select * from users;
+
+
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: db_mahasiswa
+    restart: always
+    environment:
+      MYSQL_DATABASE: pertemuan11_db
+      MYSQL_ROOT_PASSWORD: "Sayaganteng2_"
+    ports:
+      - "5434:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  app:
+    build: .
+    image: pertemuan11:1.0  # <-- TAMBAHKAN BARIS INI agar nama image menjadi pertemuan11
+    container_name: pertemuan11
+    ports:
+      - "9091:9091"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/pertemuan11_db?serverTimezone=UTC&allowPublicKeyRetrieval=true&useSSL=false
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: "Sayaganteng2_"
+
+v  db_data:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
